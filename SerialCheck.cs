@@ -9,7 +9,7 @@ public class SerialCheck : MonoBehaviour {
 		
    public void SubmitNum()
 	{
-		Debug.Log("Submitting wiht Num:" + NumLabel.text);
+		Debug.Log("Submitting wiht Num FromGitHub:" + NumLabel.text);
 		StartCoroutine(GetResultFromServer(NumLabel.text));
 	}
 	
