@@ -1,0 +1,165 @@
+#pragma strict
+static var Instance : DailyGift;
+private var today : int;
+private var ThisTime : System.DateTime;
+private var LastTime : System.DateTime;
+
+/*
+   Int型PlayerPrefs的 "ContinuousLogin"表示今天是连续几天登陆。
+   1表示今天为登陆第一天，应该拿第一天登陆奖品，7表示连续登陆七天
+   ，应该拿第七天奖品，且第七天领完后将会此项重置为1，即明日登陆，
+   将会拿到第一天登陆的奖品。若连续登陆中断，再登陆将会拿到第一天
+   的奖品。
+   
+   String型PlayerPrefs的"LastTime"表示上次登陆日期，数据示例如:
+   "1992-4-13 00:00:00" 二十四小时制。
+   
+   每次登陆之后获得次日登陆礼物的将会在最前端的对话框中弹出.
+*/
+
+function Awake()
+{
+   if(Instance == null)
+   {
+      Instance = this;
+      DontDestroyOnLoad(this.gameObject);
+   }
+   else
+   {
+     Destroy(this.gameObject);
+     return;
+   }
+   JudgeThisTime();
+}
+
+function JudgeThisTime()
+{
+   ThisTime = GetTime();
+   //PlayerPrefs.SetString("LastTime","2014-9-3 00:00:00");
+   LastTime = System.DateTime.Parse(PlayerPrefs.GetString("LastTime","1992-4-13 00:00:00"));
+   
+   Debug.Log(ThisTime.Date);
+   
+		var Lastday: System.TimeSpan;
+		    Lastday = ThisTime - LastTime;
+		    
+		    
+		    if(Lastday.TotalDays==1)
+		    {
+		       OpenInNewDay(true);
+		    }
+		    else if(Lastday.TotalDays >= 2)
+		    {
+		       OpenInNewDay(false);
+		    }
+		    else
+		    {
+		       OpenInToday();
+		    }
+		    
+			Debug.Log(Lastday.TotalDays);
+			Debug.Log(LastTime.Date);
+			
+			
+}
+
+function OpenInNewDay( isConti:boolean)
+{
+    var CDays : int = 0;
+    CDays = PlayerPrefs.GetInt("ContinuousLogin");
+    if(isConti)
+    {
+      switch(CDays)
+      {
+         case 0: GiveGift(1);PlayerPrefs.SetInt("ContinuousLogin",1);break;
+         case 1: GiveGift(2);PlayerPrefs.SetInt("ContinuousLogin",2);break;
+         case 2: GiveGift(3);PlayerPrefs.SetInt("ContinuousLogin",3);break;
+         case 3: GiveGift(4);PlayerPrefs.SetInt("ContinuousLogin",4);break;
+         case 4: GiveGift(5);PlayerPrefs.SetInt("ContinuousLogin",5);break;
+         case 5: GiveGift(6);PlayerPrefs.SetInt("ContinuousLogin",6);break;
+         case 6: GiveGift(7);PlayerPrefs.SetInt("ContinuousLogin",7);break;
+      }
+    }
+    else
+    {
+        GiveGift(1);PlayerPrefs.SetInt("ContinuousLogin",1);
+    
+    }
+    
+    
+    SetTodayAsNew();
+}
+
+function GiveGift( day :int)
+{
+   
+
+}
+
+function OpenInToday()
+{
+   Debug.Log("Open in today,like this Game? \nToday is the " + PlayerPrefs.GetInt("ContinuousLogin").ToString() + "th day of continuous login!");
+}
+
+function SetTodayAsNew()
+{
+   Debug.Log("NewDay: " + ThisTime.ToString());
+   PlayerPrefs.SetString("LastTime",ThisTime.ToString());
+}
+
+///重置连续登陆天数
+function BackToDayOne()
+{
+   PlayerPrefs.SetInt("ContinuousLogin",0);
+}
+
+///获取第几天连续登陆
+function GetContinousDay()
+{
+   return today;
+}
+
+function GetTime()
+{
+   return System.DateTime.Now.Date;
+}
+
+#if UNITY_EDITOR
+///测试脚本
+  function OnGUI()
+  {
+      if(GUILayout.Button("SetTomorrow"))
+      {
+         
+      }
+      
+       if(GUILayout.Button("CreateFakeDayYYYYYerday"))
+		{
+			PlayerPrefs.SetString("LastTime",ThisTime.Year.ToString() + "-" + ThisTime.Month.ToString() + "-" + (ThisTime.Day-2).ToString() + " 00:00:00");
+		}
+	    if(GUILayout.Button("CreateFakeDayYesterday"))
+		{
+			PlayerPrefs.SetString("LastTime",ThisTime.Year.ToString() + "-" + ThisTime.Month.ToString() + "-" + (ThisTime.Day-1).ToString() + " " + "00:00:00");
+		}
+		if(GUILayout.Button("CreateFakeDayTomorrow"))
+		{
+			PlayerPrefs.SetString("LastTime",ThisTime.Year.ToString() + "-" + ThisTime.Month.ToString() + "-" + (ThisTime.Day+1).ToString() + " " + "00:00:00");
+		}
+		
+		if(GUILayout.Button("Delete"))
+		{
+			PlayerPrefs.DeleteAll();
+		}
+		if(GUILayout.Button("SetAll"))
+		{
+			
+		}
+		
+		
+		if(GUILayout.Button("ShowToday Gift"))
+		{
+            
+		}
+  
+  }
+#endif
