@@ -19,6 +19,7 @@ public class DailyGift: MonoBehaviour {
 	{
 		if(instance==null)
 		{
+            Debug.Log("instance set!");
 		  Once=true;
 		  StartCoroutine(GetTime());
 		  instance=this;
