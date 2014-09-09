@@ -124,6 +124,32 @@ function GetTime()
    return System.DateTime.Now.Date;
 }
 
+///UIDraggablePanel滑动结束后，自动识别当前页，并设置页面按钮
+function checkThread()
+{
+  var judegeint:int = DragPanel.transform.localPosition.x;
+		
+		
+  while(Mathf.Abs(judegeint) >3 && Mathf.Abs(judegeint + 369) >3 && Mathf.Abs(judegeint + 738) >3)
+   {
+	   judegeint = DragPanel.transform.localPosition.x;
+	   
+		if(DragPanel.transform.localPosition.x>=-184.5)
+		{
+			setpage(1);
+		}
+		else if(DragPanel.transform.localPosition.x<-184.5 && DragPanel.transform.localPosition.x>=-553.5)
+		{
+			setpage(2);
+		}
+		else if(DragPanel.transform.localPosition.x<-553.5 && DragPanel.transform.localPosition.x>=-922.5)
+		{
+			setpage(3);
+	    }
+			yield null;
+	}
+}
+
 #if UNITY_EDITOR
 ///测试脚本
   function OnGUI()
