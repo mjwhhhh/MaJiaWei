@@ -130,7 +130,7 @@ function checkThread()
   var judegeint:int = DragPanel.transform.localPosition.x;
 		
 		
-  while(Mathf.Abs(judegeint) >3 && Mathf.Abs(judegeint + 369) >3 && Mathf.Abs(judegeint + 738) >3)
+  while(Mathf.Abs(judegeint) % 369 > 2 && Mathf.Abs(judegeint) % 369 < 367)
    {
 	   judegeint = DragPanel.transform.localPosition.x;
 	   
